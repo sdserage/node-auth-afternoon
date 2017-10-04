@@ -1,7 +1,8 @@
 const express   = require('express')
     , session   = require('express-session')
     , passport  = require('passport')
-    , strategy  = require(`${__dirname}/strategy`);
+    , strategy  = require(`${__dirname}/strategy`)
+    , request   = require('request');
 
 const app = express();
 app.use( session({
@@ -35,6 +36,22 @@ app.get('/login', passport.authenticate('auth0', {
   failureFlash:    true,
   connection:      'github'
 }));
+
+app.get('/followers', (req, res)=>{
+  if(req.user){
+    const FollowersRequest = {
+      url: req.user.followers,
+      headers: {
+        'User-Agent': req.user.clientID
+      }
+    };
+    request(FollowersRequest, (error,response,body)=>{
+      res.status(200).send(body);
+    });
+  } else {
+    res.redirect('/login');
+  }
+});
 
 const port = 3000;
 app.listen( port, () => { console.log(`Server listening on port ${port}`); } );
