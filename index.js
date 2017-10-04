@@ -16,5 +16,18 @@ app.use(passport.session());
 
 passport.use(strategy);
 
+passport.serializeUser((user, done)=>{
+  const {_json} = user;
+  done(null,{ clientID:  _json.clientID
+            , email:     _json.email
+            , name:      _json.name
+            , followers: _json.followers_url
+  });
+})
+
+passport.deserializeUser((obj, done)=>{
+  done(null, obj);
+})
+
 const port = 3000;
 app.listen( port, () => { console.log(`Server listening on port ${port}`); } );
