@@ -29,5 +29,12 @@ passport.deserializeUser((obj, done)=>{
   done(null, obj);
 })
 
+app.get('/login', passport.authenticate('auth0', {
+  successRedirect: '/followers',
+  failureRedirect: '/login',
+  failureFlash:    true,
+  connection:      'github'
+}));
+
 const port = 3000;
 app.listen( port, () => { console.log(`Server listening on port ${port}`); } );
